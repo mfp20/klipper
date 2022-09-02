@@ -12,7 +12,6 @@
 #include "board/pgm.h" // READP
 #include "command.h" // DECL_CONSTANT
 #include "sched.h" // sched_wake_tasks
-#include "serial_irq.h" // serial_enable_tx_irq
 
 #define RX_BUFFER_SIZE 192
 
@@ -21,6 +20,9 @@ static uint8_t transmit_buf[96], transmit_pos, transmit_max;
 
 DECL_CONSTANT("SERIAL_BAUD", CONFIG_SERIAL_BAUD);
 DECL_CONSTANT("RECEIVE_WINDOW", RX_BUFFER_SIZE);
+
+// Tx buffer data
+void (*enable_tx_irq)(void) = 0;
 
 // Rx interrupt - store read data
 void
@@ -109,7 +111,7 @@ console_sendf(const struct command_encoder *ce, va_list args)
         memmove(&transmit_buf[0], &transmit_buf[tpos], tmax);
         writeb(&transmit_pos, 0);
         writeb(&transmit_max, tmax);
-        serial_enable_tx_irq();
+        if (enable_tx_irq) enable_tx_irq();
     }
 
     // Generate message
@@ -118,5 +120,5 @@ console_sendf(const struct command_encoder *ce, va_list args)
 
     // Start message transmit
     writeb(&transmit_max, tmax + msglen);
-    serial_enable_tx_irq();
+    if (enable_tx_irq) enable_tx_irq();
 }

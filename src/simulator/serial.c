@@ -9,22 +9,6 @@
 #include "board/serial_irq.h" // serial_get_tx_byte
 #include "sched.h" // DECL_INIT
 
-void
-serial_init(void)
-{
-    // Make stdin/stdout non-blocking
-    fcntl(STDIN_FILENO, F_SETFL, fcntl(STDIN_FILENO, F_GETFL, 0) | O_NONBLOCK);
-    fcntl(STDOUT_FILENO, F_SETFL
-          , fcntl(STDOUT_FILENO, F_GETFL, 0) | O_NONBLOCK);
-}
-DECL_INIT(serial_init);
-
-void *
-console_receive_buffer(void)
-{
-    return NULL;
-}
-
 static void
 do_uart(void)
 {
@@ -48,3 +32,22 @@ serial_enable_tx_irq(void)
     // do_uart() directly in this demo code.
     do_uart();
 }
+
+void
+serial_init(void)
+{
+    // Make stdin/stdout non-blocking
+    fcntl(STDIN_FILENO, F_SETFL, fcntl(STDIN_FILENO, F_GETFL, 0) | O_NONBLOCK);
+    fcntl(STDOUT_FILENO, F_SETFL
+          , fcntl(STDOUT_FILENO, F_GETFL, 0) | O_NONBLOCK);
+
+    enable_tx_irq = serial_enable_tx_irq;
+}
+DECL_INIT(serial_init);
+
+void *
+console_receive_buffer(void)
+{
+    return NULL;
+}
+

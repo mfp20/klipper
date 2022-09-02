@@ -4,7 +4,7 @@
 #include <stdint.h> // uint32_t
 
 // callback provided by board specific code
-void serial_enable_tx_irq(void);
+extern void (*enable_tx_irq)(void);
 
 // serial_irq.c
 void serial_rx_byte(uint_fast8_t data);

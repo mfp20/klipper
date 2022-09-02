@@ -67,5 +67,7 @@ serial_init(void)
     armcm_enable_irq(SERCOM0_Handler, SERCOM0_2_IRQn, 0);
     armcm_enable_irq(SERCOM0_Handler, SERCOM0_3_IRQn, 0);
 #endif
+
+    enable_tx_irq = serial_enable_tx_irq;
 }
 DECL_INIT(serial_init);

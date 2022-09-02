@@ -89,5 +89,7 @@ serial_init(void)
 
     gpio_peripheral(GPIO_Rx, GPIO_FUNCTION(7), 1);
     gpio_peripheral(GPIO_Tx, GPIO_FUNCTION(7), 0);
+
+    enable_tx_irq = serial_enable_tx_irq;
 }
 DECL_INIT(serial_init);

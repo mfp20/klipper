@@ -82,5 +82,7 @@ serial_init(void)
     Port->UART_IER = UART_IER_RXRDY;
     armcm_enable_irq(UARTx_Handler, UARTx_IRQn, 0);
     Port->UART_CR = UART_CR_RXEN | UART_CR_TXEN;
+
+    enable_tx_irq = serial_enable_tx_irq;
 }
 DECL_INIT(serial_init);

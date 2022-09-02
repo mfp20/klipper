@@ -52,6 +52,14 @@ DECL_CONSTANT_STR("RESERVE_PINS_serial", "PJ0,PJ1");
 #define USARTx_UDRE_vect AVR_SERIAL_REG(USART, CONFIG_SERIAL_PORT, _UDRE_vect)
 #endif
 
+// Enable tx interrupts
+void
+serial_enable_tx_irq(void)
+{
+    UCSRxB |= 1<<UDRIEx;
+}
+
+// initialize hardware and setup irq hook
 void
 serial_init(void)
 {
@@ -60,6 +68,8 @@ serial_init(void)
     UBRRx = DIV_ROUND_CLOSEST(CONFIG_CLOCK_FREQ, cm * CONFIG_SERIAL_BAUD) - 1UL;
     UCSRxC = (1<<UCSZx1) | (1<<UCSZx0);
     UCSRxB = (1<<RXENx) | (1<<TXENx) | (1<<RXCIEx) | (1<<UDRIEx);
+
+    enable_tx_irq = serial_enable_tx_irq;
 }
 DECL_INIT(serial_init);
 
@@ -80,9 +90,3 @@ ISR(USARTx_UDRE_vect)
         UDRx = data;
 }
 
-// Enable tx interrupts
-void
-serial_enable_tx_irq(void)
-{
-    UCSRxB |= 1<<UDRIEx;
-}

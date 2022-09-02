@@ -88,5 +88,7 @@ serial_init(void)
     // Enable receive irq
     armcm_enable_irq(UARTx_IRQHandler, UARTx_IRQn, 0);
     UARTx->imsc = UART_UARTIMSC_RXIM_BITS | UART_UARTIMSC_RTIM_BITS;
+
+    enable_tx_irq = serial_enable_tx_irq;
 }
 DECL_INIT(serial_init);
